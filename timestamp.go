@@ -13,7 +13,9 @@ type Logger interface {
 	Fatal(...interface{})
 }
 
-var logger Logger = log.New(os.Stdout, "", 0)
+var (
+	logger Logger = log.New(os.Stdout, "", 0)
+)
 
 type EpochType string
 
@@ -24,6 +26,14 @@ const (
 )
 
 func Parse(t int64, etype string) {
+	parse(t, etype)
+}
+
+func parse(t int64, etype string) {
+	flag.Int64Var(&t, "value", 0, "parse a int64 (millis) timestamp")
+	flag.StringVar(&etype, "epoch", "millis", "parse a int64 (millis) timestamp")
+	flag.Parse()
+
 	if t <= 0 {
 		flag.PrintDefaults()
 		log.Fatalln("value has zero or negative value")
