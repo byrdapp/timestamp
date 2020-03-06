@@ -1,3 +1,3 @@
-module github.com/byrd/timestamp
+module github.com/byrdapp/timestamp
 
 go 1.14
