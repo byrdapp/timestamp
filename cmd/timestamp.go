@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/byrdapp/timestamp"
-)
+import "github.com/byrdapp/timestamp/parser"
 
 var (
 	t     int64
@@ -10,5 +8,5 @@ var (
 )
 
 func main() {
-	timestamp.Parse(t, etype)
+	parser.Parse(t, etype)
 }
