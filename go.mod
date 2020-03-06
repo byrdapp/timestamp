@@ -1,3 +1,3 @@
-module github.com/blixenkrone/byrd/timestamp
+module github.com/byrd/timestamp
 
 go 1.14
