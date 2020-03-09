@@ -19,16 +19,18 @@ var (
 type EpochType string
 
 const (
-	DKFormat           = "02-01-2006T15:04:05Z07:00"
-	Millis   EpochType = "millis"
-	Seconds  EpochType = "seconds"
+	DKFormat                = "02-01-2006T15:04:05Z07:00"
+	Millis        EpochType = "millis"
+	Seconds       EpochType = "seconds"
+	SecondsLength           = 99999999999
+	MillissLength           = 99999999999
 )
 
-func Parse(t int64, etype string) {
-	parse(t, etype)
+func Parse(t int64, etype string) Timestamp {
+	return parse(t, etype)
 }
 
-func parse(t int64, etype string) {
+func parse(t int64, etype string) Timestamp {
 	if t <= 0 {
 		log.Fatalln("value has zero or negative value")
 	}
@@ -47,6 +49,7 @@ func parse(t int64, etype string) {
 	if stamp.IsZero() {
 		log.Fatalln("time has zero or wrong value")
 	}
+	return stamp
 }
 
 type Timestamp time.Time
@@ -76,10 +79,14 @@ func parseSeconds(v int64) Timestamp {
 }
 
 func (t *Timestamp) UnmarshalJSON(b []byte) error {
-	millis, err := strconv.ParseInt(string(b), 10, 64)
+	intval, err := strconv.ParseInt(string(b), 10, 64)
 	if err != nil {
 		return err
 	}
-	*t = Timestamp(time.Unix(0, millis))
+	if intval <= SecondsLength {
+		*t = parseSeconds(intval)
+	} else {
+		*t = parseMillis(intval)
+	}
 	return nil
 }
