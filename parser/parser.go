@@ -63,9 +63,13 @@ func (t Timestamp) IsZero() bool {
 func (t Timestamp) String() string {
 	return time.Time(t).String()
 }
-func (t Timestamp) UnixNano() int64 {
-	return time.Time(t).UnixNano()
+func (t Timestamp) Unix() int64 {
+	return time.Time(t).Unix()
 }
+
+// func (t Timestamp) UnixNano() int64 {
+// 	return time.Time(t).UnixNano()
+// }
 func (t Timestamp) UTC() Timestamp {
 	return Timestamp(time.Time(t).UTC())
 }
