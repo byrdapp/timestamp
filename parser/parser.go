@@ -44,10 +44,8 @@ func parse(t int64, etype string) Timestamp {
 	default:
 		stamp = parseMillis(t)
 	}
-
-	logger.Printf("%T => %v", stamp, stamp.Format())
 	if stamp.IsZero() {
-		log.Fatalln("time has zero or wrong value")
+		log.Printf("time has zero or wrong value: %v", t)
 	}
 	return stamp
 }
