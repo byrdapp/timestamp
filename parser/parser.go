@@ -32,7 +32,7 @@ func Parse(t int64, etype string) Timestamp {
 
 func parse(t int64, etype string) Timestamp {
 	if t <= 0 {
-		log.Fatalln("value has zero or negative value")
+		log.Printf("value: %v has zero or negative value", t)
 	}
 
 	var stamp Timestamp
