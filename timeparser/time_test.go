@@ -1,4 +1,4 @@
-package parser
+package timeparser
 
 import (
 	"encoding/json"
@@ -22,7 +22,7 @@ func TestJSONUnmarshall(t *testing.T) {
 			if err := json.Unmarshal(v.val, &ts); err != nil {
 				log.Fatalf("jsonerr: %v", err)
 			}
-			log.Println(ts.Format())
+			log.Println(ts.FormatDKTime())
 		}
 	})
 }
@@ -37,7 +37,10 @@ func TestParser(t *testing.T) {
 		}
 
 		for _, v := range testformat {
-			stamp := Parse(v.val)
+			stamp, err := New(v.val)
+			if err != nil {
+				return
+			}
 			if stamp != v.expected {
 				t.Fail()
 				return

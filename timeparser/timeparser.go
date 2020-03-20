@@ -1,6 +1,8 @@
-package parser
+package timeparser
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -21,40 +23,37 @@ const (
 	MaxSecondsCap = int64(9999999999)
 )
 
-func Parse(t int64) Timestamp {
-	return parse(t)
-}
-
-func parse(t int64) Timestamp {
-	if t <= 0 {
-		log.Printf("value: %v has zero or negative value", t)
-	}
-
-	var stamp Timestamp
-
-	if t <= MaxSecondsCap {
-		logger.Printf("is seconds!")
-		stamp = parseSeconds(t)
-	} else {
-		logger.Printf("is millis!")
-		stamp = parseMillis(t)
-	}
-	if stamp.IsZero() {
-		log.Printf("time has zero or wrong value: %v", t)
-	}
-	return stamp
-}
-
 type Timestamp time.Time
 
-func (t Timestamp) Format() string {
+func New(t int64) (Timestamp, error) {
+	var stamp Timestamp
+	return stamp.parse(t)
+}
+
+func (t Timestamp) parse(val int64) (Timestamp, error) {
+	if val <= 0 {
+		return t, errors.New(fmt.Sprintf("value: %v has zero or negative value", t))
+	}
+
+	if val <= MaxSecondsCap {
+		t = parseSeconds(val)
+	} else {
+		t = parseMillis(val)
+	}
+	if t.IsZero() {
+		log.Printf("time has zero or wrong value: %v", val)
+	}
+	return t, nil
+}
+
+func (t Timestamp) FormatDKTime() string {
 	return time.Time(t).Format(DKFormat)
 }
 func (t Timestamp) IsZero() bool {
 	return time.Time(t).IsZero()
 }
-func (t Timestamp) String() string {
-	return t.Format()
+func (t Timestamp) StringDKTime() string {
+	return t.FormatDKTime()
 }
 func (t Timestamp) Unix() int64 {
 	return time.Time(t).Unix()
@@ -81,10 +80,8 @@ func (t *Timestamp) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	if intval <= MaxSecondsCap {
-		logger.Printf("is seconds!")
 		*t = parseSeconds(intval)
 	} else {
-		logger.Printf("is millis!")
 		*t = parseMillis(intval)
 	}
 	return nil
