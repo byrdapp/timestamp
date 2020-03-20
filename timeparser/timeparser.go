@@ -1,8 +1,6 @@
 package timeparser
 
 import (
-	"errors"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -25,25 +23,18 @@ const (
 
 type Timestamp time.Time
 
-func New(t int64) (Timestamp, error) {
+func New(t int64) Timestamp {
 	var stamp Timestamp
 	return stamp.parse(t)
 }
 
-func (t Timestamp) parse(val int64) (Timestamp, error) {
-	if val <= 0 {
-		return t, errors.New(fmt.Sprintf("value: %v has zero or negative value", t))
-	}
-
+func (t Timestamp) parse(val int64) Timestamp {
 	if val <= MaxSecondsCap {
 		t = parseSeconds(val)
 	} else {
 		t = parseMillis(val)
 	}
-	if t.IsZero() {
-		log.Printf("time has zero or wrong value: %v", val)
-	}
-	return t, nil
+	return t
 }
 
 func (t Timestamp) FormatDKTime() string {

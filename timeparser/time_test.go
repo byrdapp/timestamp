@@ -37,10 +37,7 @@ func TestParser(t *testing.T) {
 		}
 
 		for _, v := range testformat {
-			stamp, err := New(v.val)
-			if err != nil {
-				return
-			}
+			stamp := New(v.val)
 			if stamp != v.expected {
 				t.Fail()
 				return
