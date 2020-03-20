@@ -80,7 +80,7 @@ func (t *Timestamp) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	if intval <= time.Second.Microseconds() {
+	if intval <= MaxSecondsCap {
 		logger.Printf("is seconds!")
 		*t = parseSeconds(intval)
 	} else {
