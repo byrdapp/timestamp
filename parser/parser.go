@@ -16,32 +16,27 @@ var (
 	logger Logger = log.New(os.Stdout, "", 0)
 )
 
-type EpochType string
-
 const (
-	DKFormat                = "02-01-2006T15:04:05Z07:00"
-	Millis        EpochType = "millis"
-	Seconds       EpochType = "seconds"
-	SecondsLength           = 99999999999
-	MillissLength           = 99999999999
+	DKFormat      = "02-01-2006T15:04:05Z07:00"
+	MaxSecondsCap = int64(9999999999)
 )
 
-func Parse(t int64, etype string) Timestamp {
-	return parse(t, etype)
+func Parse(t int64) Timestamp {
+	return parse(t)
 }
 
-func parse(t int64, etype string) Timestamp {
+func parse(t int64) Timestamp {
 	if t <= 0 {
 		log.Printf("value: %v has zero or negative value", t)
 	}
 
 	var stamp Timestamp
-	switch EpochType(etype) {
-	case Millis:
-		stamp = parseMillis(t)
-	case Seconds:
+
+	if t <= MaxSecondsCap {
+		logger.Printf("is seconds!")
 		stamp = parseSeconds(t)
-	default:
+	} else {
+		logger.Printf("is millis!")
 		stamp = parseMillis(t)
 	}
 	if stamp.IsZero() {
@@ -59,7 +54,7 @@ func (t Timestamp) IsZero() bool {
 	return time.Time(t).IsZero()
 }
 func (t Timestamp) String() string {
-	return time.Time(t).String()
+	return t.Format()
 }
 func (t Timestamp) Unix() int64 {
 	return time.Time(t).Unix()
@@ -85,9 +80,11 @@ func (t *Timestamp) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	if intval <= SecondsLength {
+	if intval <= time.Second.Microseconds() {
+		logger.Printf("is seconds!")
 		*t = parseSeconds(intval)
 	} else {
+		logger.Printf("is millis!")
 		*t = parseMillis(intval)
 	}
 	return nil

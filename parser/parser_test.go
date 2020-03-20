@@ -37,7 +37,7 @@ func TestParser(t *testing.T) {
 		}
 
 		for _, v := range testformat {
-			stamp := Parse(v.val, "millis")
+			stamp := Parse(v.val)
 			if stamp != v.expected {
 				t.Fail()
 				return
