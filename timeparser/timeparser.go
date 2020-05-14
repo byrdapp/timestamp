@@ -65,6 +65,10 @@ func parseSeconds(v int64) Timestamp {
 	return Timestamp(time.Unix(v, 0)).UTC()
 }
 
+func (t *Timestamp) Value() (driver.Value, error) {
+	return time.Time(*t)
+}
+
 func (t *Timestamp) UnmarshalJSON(b []byte) error {
 	intval, err := strconv.ParseInt(string(b), 10, 64)
 	if err != nil {
