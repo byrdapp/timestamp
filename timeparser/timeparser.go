@@ -1,6 +1,7 @@
 package timeparser
 
 import (
+	"database/sql/driver"
 	"log"
 	"os"
 	"strconv"
@@ -66,7 +67,7 @@ func parseSeconds(v int64) Timestamp {
 }
 
 func (t *Timestamp) Value() (driver.Value, error) {
-	return time.Time(*t)
+	return time.Time(*t), nil
 }
 
 func (t *Timestamp) UnmarshalJSON(b []byte) error {
